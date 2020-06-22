@@ -70,6 +70,15 @@ export default {
   },
 
   props: {
+
+    /**
+     * Max Children visible
+     */
+    maxVisibleChildren: {
+      type: Number,
+      default: 1,
+    },
+
     /**
      * Whether to allow resetting value even if there are disabled selected nodes.
      */
@@ -1751,10 +1760,12 @@ export default {
 
     select(node) {
       if (this.disabled || node.isDisabled) {
+        // console.log(1)
         return
       }
 
       if (this.single) {
+        // console.log(2)
         this.clear()
       }
 
@@ -1762,17 +1773,64 @@ export default {
         ? this.forest.checkedStateMap[node.id] === UNCHECKED
         : !this.isSelected(node)
 
-      if (nextState) {
-        this._selectNode(node)
-      } else {
+      if (nextState) /** !! SELECT */ {
+        // console.log(3)
+        // this._selectNode(node)
+        if (node.isLeaf) {
+          this._selectNode(node)
+          const parent = this.options.find(element => element.id === node.ancestors[0].id)
+          if (parent) {
+            if (parent.limit) {
+              console.warn('The parent of this Leaf has a limit')
+              // We need to check if we haven't reached the parent Limit
+              // number of element of this parent
+              const elementsOfTheParent = this.getValue().filter(element => element.parent === parent.id).length
+              if (elementsOfTheParent >= parent.limit) {
+                console.warn('We have reached the limit of the parent')
+                // we need to disable the unselected nodes of this parent
+                // get all values of the options (selected of the parent)
+                const selectedParentOptions = this.options.filter(element => element.id === parent.id)
+                selectedParentOptions[0].children.forEach(el => {
+                  if (!this.getValue().includes(el)) {
+                    this.getNode(el.id).isDisabled = true
+                  }
+                })
+              }
+            }
+          }
+        } else /* if (node.isBranch) */{
+          const optionSelected = this.options.find(el => el.id === node.id)
+          if (optionSelected.limit) {
+            if (optionSelected.children.length >= optionSelected.limit) {
+              console.warn('This branch has more children than its limit')
+              optionSelected.children.slice(0, optionSelected.limit).forEach(el => this._selectNode(this.options.find(x => x.id === el.id)))
+            }
+          }
+        }
+      } else /** !! DESELECT */{
+        if (node.isLeaf) {
+          const parent = this.options.find(element => element.id === node.ancestors[0].id)
+          if (parent) {
+            if (parent.limit) {
+              const selectedParentOptions = this.options.filter(element => element.id === parent.id)
+              selectedParentOptions[0].children.forEach(el => {
+                if (!this.getValue().includes(el)) {
+                  this.getNode(el.id).isDisabled = false
+                }
+              })
+            }
+          }
+        }
         this._deselectNode(node)
       }
 
       this.buildForestState()
 
       if (nextState) {
+        // console.log(5)
         this.$emit('select', node.raw, this.getInstanceId())
       } else {
+        // console.log(6)
         this.$emit('deselect', node.raw, this.getInstanceId())
       }
 
@@ -1781,10 +1839,12 @@ export default {
       }
 
       if (this.single && this.closeOnSelect) {
+        // console.log(8)
         this.closeMenu()
 
         // istanbul ignore else
         if (this.searchable) {
+          // console.log(9)
           this._blurOnSelect = true
         }
       }

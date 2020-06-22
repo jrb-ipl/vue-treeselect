@@ -5,7 +5,7 @@ html(lang="en")
   head
     meta(charset="utf-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0")
-    title Vue-Treeselect
+    title Ekara Tagfilter
     meta(name="description" content="A multi-select component with nested options support for Vue.js")
     meta(property="og:title" content="Vue-Treeselect")
     meta(property="og:site_name" content="Vue-Treeselect")
@@ -47,28 +47,23 @@ html(lang="en")
       header.site-header
         div#header.container
           div.site-header-logo
-            a.site-header-logo-link(href="https://vue-treeselect.js.org/")
-              | Vue
-              span.site-header-logo-component-name Treeselect
-          nav.site-header-nav
-            a.site-header-nav-item(href="https://github.com/riophae/vue-treeselect/releases")
-              =`v${require('../package.json').version}`
-            span.site-header-nav-item
-              a.github-button(href="https://github.com/riophae/vue-treeselect" data-show-count="true" aria-label="Star riophae/vue-treeselect on GitHub")
-                | Star
+            a.site-header-logo-link(href="javascript:void()")
+              | Ekara
+              span.site-header-logo-component-name TagFilter
+          
       div.container
         section#main
           div#sidebar
             include ./partials/sidebar
           div#content
             include ./partials/dev
-            include ./partials/introduction
-            include ./partials/getting-started
-            include ./partials/guides
-            include ./partials/api
-      footer.site-footer
-        div.container
-          | Copyright &copy; 2017-#{new Date().getFullYear()} <a href="https://github.com/riophae">Riophae Lee</a>. MIT Licensed.
-    script(src="https://buttons.github.io/buttons.js" async defer)
+            //- include ./partials/introduction
+            //- include ./partials/getting-started
+            //- include ./partials/guides
+            //- include ./partials/api
+    //-   footer.site-footer
+    //-     div.container
+    //-       | Copyright &copy; 2017-#{new Date().getFullYear()} <a href="https://github.com/riophae">Riophae Lee</a>. MIT Licensed.
+    //- script(src="https://buttons.github.io/buttons.js" async defer)
 
 +renderToc()

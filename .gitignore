@@ -12,3 +12,5 @@ dist
 gh-pages
 
 test/unit/coverage
+
+.vscode

@@ -45,7 +45,6 @@
        */
       hasUndisabledValue() {
         const { instance } = this
-
         return (
           instance.hasValue &&
           instance.internalValue.some(id => !instance.getNode(id).isDisabled)
